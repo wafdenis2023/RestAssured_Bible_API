@@ -1,19 +1,21 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:11-jre-slim
+# Use an official Maven image with JDK 11 (or your required version)
+FROM maven:3.8.5-openjdk-11-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the pom.xml file and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
+# Copy the project source
+COPY src ./src
 
-# Package the application
-RUN mvn clean package -DskipTests
+# Copy the rest of the project files
+COPY . .
 
-# Command to run the tests
+# Build the project
+RUN mvn clean install
+
+# Command to run tests
 CMD ["mvn", "test"]

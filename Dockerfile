@@ -1,21 +1,22 @@
-# Use an official Maven image with JDK 11 (or your required version)
-FROM maven:3.8.5-eclipse-temurin-20
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:20-slim
 
-# Set the working directory in the container
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean
+
 WORKDIR /app
 
-# Copy the pom.xml file and download dependencies
+# Copy the pom.xml file and download the dependencies
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy the project source
+# Copy the source code
 COPY src ./src
-
-# Copy the rest of the project files
-COPY . .
 
 # Build the project
 RUN mvn clean install
 
-# Command to run tests
+# Run the tests
 CMD ["mvn", "test"]

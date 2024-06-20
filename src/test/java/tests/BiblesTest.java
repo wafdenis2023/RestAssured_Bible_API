@@ -3,7 +3,6 @@ package tests;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import common.ApiUtils;
-
 import static org.hamcrest.Matchers.equalTo;
 
 public class BiblesTest {
